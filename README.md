@@ -107,6 +107,23 @@ trước khi xóa. Nó **chỉ xóa dữ liệu học sinh — không đụng đ
 người dùng đã tạo**, nên không cần tạo lại tài khoản admin sau khi xóa. Có
 thể thêm `--yes` để xóa ngay không cần hỏi (khi chạy tự động trong script).
 
+## Deploy qua Coolify (Docker) — nếu bạn có server/VPS riêng
+
+Nếu bạn tự quản lý một server riêng và đã cài Coolify (bảng điều khiển
+hosting mã nguồn mở, giao diện giống PythonAnywiere/Render), thư mục này đã
+có sẵn `Dockerfile` và `entrypoint.sh` để deploy trực tiếp — không cần làm
+theo phần "Cài đặt lần đầu" ở trên nữa. Lưu ý quan trọng:
+
+- File `data/qlhb.db` **cố tình không nằm trong Git** (xem `.gitignore`) —
+  dữ liệu thật phải sống trong một Volume của Coolify, gắn vào đường dẫn
+  `/app/data` trong container, để không bị ghi đè mỗi lần deploy lại.
+- `data_seed/qlhb.db` là bản sao dữ liệu gốc (879 học sinh từ DSHS 2.xlsx) —
+  **có** nằm trong Git, dùng để tự động nạp vào Volume trống ở lần deploy
+  đầu tiên (xem logic trong `entrypoint.sh`). Từ lần thứ hai trở đi, nếu
+  Volume đã có `qlhb.db`, nó sẽ được giữ nguyên.
+- Nhớ cấu hình biến môi trường `QLHB_SECRET_KEY` (chuỗi ngẫu nhiên dài) và
+  `QLHB_FORCE_HTTPS=1` trong phần Environment Variables của Coolify.
+
 ## Đưa lên internet thật (production)
 
 Máy chủ chạy bằng `python3 run.py` chỉ dùng để thử nghiệm — **không** để

@@ -1,0 +1,20 @@
+# Cơ sở dữ liệu THẬT đang chạy — KHÔNG đưa vào Git, vì:
+# 1) Có dữ liệu nhạy cảm của học sinh (hoàn cảnh gia đình, ảnh...)
+# 2) Nếu để Git theo dõi, mỗi lần deploy lại sẽ ghi đè dữ liệu mới nhất
+#    bằng bản cũ trong repo — mất dữ liệu người dùng đã thêm/sửa sau này.
+# Dữ liệu thật sống trong Volume của Coolify (xem README / hướng dẫn deploy).
+data/*.db
+data/*.db-journal
+
+# data_seed/qlhb.db thì NGƯỢC LẠI — cố tình được commit vào Git, vì đó là
+# bản sao "hạt giống" (879 học sinh đã nhập từ DSHS 2.xlsx) dùng để tự nạp
+# vào lần deploy đầu tiên khi Volume còn trống. Không xóa dòng exclude nào
+# bên dưới sẽ vô tình gitignore luôn cả nó.
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.DS_Store
+Thumbs.db

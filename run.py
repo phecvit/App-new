@@ -36,6 +36,12 @@ app.config["MAX_CONTENT_LENGTH"] = 12 * 1024 * 1024  # 12MB request cap (covers 
 
 app.register_blueprint(api_bp)
 
+# Chạy ở module-level (không chỉ trong khối __main__) để migration cũng được
+# áp dụng khi app chạy qua gunicorn/WSGI server thật (không phải chỉ khi chạy
+# trực tiếp bằng `python3 run.py`) — nếu không, các cột mới thêm vào schema
+# ở các bản cập nhật sau sẽ không bao giờ được tạo trên server production.
+db.init_db()
+
 
 @app.before_request
 def _init():
@@ -64,7 +70,6 @@ def _security_headers(resp):
 
 
 if __name__ == "__main__":
-    db.init_db()
     port = int(os.environ.get("PORT", 8000))
     debug = os.environ.get("QLHB_DEBUG") == "1"
     print(f"Sổ Học Bổng chạy tại http://0.0.0.0:{port}  (Ctrl+C để dừng)")
