@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sổ Học Bổng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <form class="login-card" id="loginForm">
+    <div class="login-brand">
+      <span class="mark"></span>
+      <div>
+        <h1>Sổ Học Bổng</h1>
+        <div class="sub">Quản lý học sinh &amp; sinh viên nhận tài trợ</div>
+      </div>
+    </div>
+    <div class="field">
+      <label for="loginUsername">Tên đăng nhập</label>
+      <input id="loginUsername" type="text" autocomplete="username" autofocus />
+    </div>
+    <div class="field">
+      <label for="loginPassword">Mật khẩu</label>
+      <input id="loginPassword" type="password" autocomplete="current-password" />
+    </div>
+    <div class="login-error" id="loginError" style="display:none;"></div>
+    <button class="btn primary" id="btnLogin" type="submit">Đăng nhập</button>
+    <div class="login-note">Tài khoản do quản trị viên cấp. Liên hệ quản trị nếu bạn chưa có tài khoản hoặc quên mật khẩu.</div>
+  </form>
+</div>
+
+<div id="appRoot" style="display:none;">
+
+<div class="readonly-banner" id="roBanner"></div>
+
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark"></span>
+      <div>
+        <h1>Sổ Học Bổng</h1>
+        <div class="sub">Quản lý học sinh &amp; sinh viên nhận tài trợ</div>
+      </div>
+    </div>
+    <div class="statstrip" id="statStrip"></div>
+    <div class="userbar">
+      <div class="user-badge" id="userBadge"></div>
+      <button class="btn ghost small" id="btnChangePassword">Đổi mật khẩu</button>
+      <button class="btn ghost small" id="btnLogout">Đăng xuất</button>
+    </div>
+  </header>
+
+  <nav class="tabbar">
+    <button class="tabbtn active" data-tab="home">Trang chủ</button>
+    <button class="tabbtn" data-tab="list">Danh sách</button>
+    <button class="tabbtn" data-tab="stats">Thống kê</button>
+    <button class="tabbtn" data-tab="review">Cần kiểm tra <span class="badge" id="reviewBadge"></span></button>
+    <button class="tabbtn" data-tab="report">Báo cáo</button>
+    <button class="tabbtn" data-tab="users" style="display:none;">Người dùng</button>
+  </nav>
+
+  <main>
+    <section class="view active" id="view-home">
+      <div class="hero" id="homeHero">
+        <div class="hero-mosaic" id="heroMosaic"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-eyebrow">QUỸ HỌC BỔNG</div>
+          <h1>Đồng hành cùng các em đến trường</h1>
+          <p class="hero-sub">Theo dõi hình ảnh, hoàn cảnh gia đình, kết quả học tập từng học kỳ và số tiền tài trợ của từng học sinh — từ tiểu học đến đại học.</p>
+          <div class="hero-stats" id="homeStats"></div>
+        </div>
+      </div>
+
+      <div class="home-section-title">Truy cập nhanh</div>
+      <div class="home-quicknav" id="homeQuickNav"></div>
+
+      <div class="home-section-title">Một số học sinh trong chương trình</div>
+      <div class="home-recent" id="homeRecent"></div>
+    </section>
+
+    <section class="view" id="view-list">
+      <div class="layout">
+        <div class="panel filters">
+          <div class="field">
+            <label for="fSearch">Tìm kiếm</label>
+            <input id="fSearch" type="text" placeholder="Tên, trường, địa chỉ..." />
+          </div>
+          <div class="field">
+            <label for="fTinh">Tỉnh/Thành</label>
+            <select id="fTinh"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="fCap">Cấp học</label>
+            <select id="fCap"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="fKhuVuc">Khu vực</label>
+            <select id="fKhuVuc"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="fPhuTrach">Người phụ trách</label>
+            <select id="fPhuTrach"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="fHocluc">Học lực (gần nhất)</label>
+            <select id="fHocluc"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="fTrangthai">Học bổng (năm gần nhất)</label>
+            <select id="fTrangthai">
+              <option value="">Tất cả</option>
+              <option value="Có">Đang nhận</option>
+              <option value="Không">Không nhận</option>
+            </select>
+          </div>
+          <button class="btn ghost small" id="btnClearFilters">Xóa bộ lọc</button>
+        </div>
+
+        <div class="panel">
+          <div class="toolbar">
+            <span class="count" id="resultCount"></span>
+            <span class="search"></span>
+            <button class="btn small" id="btnImportStudents">Nhập từ file mẫu</button>
+            <button class="btn primary small" id="btnAddStudent">+ Thêm học sinh</button>
+          </div>
+          <div class="tablewrap">
+            <table class="list">
+              <thead>
+                <tr>
+                  <th>Học sinh</th>
+                  <th>Tỉnh/Thành</th>
+                  <th>Trường / Cấp học</th>
+                  <th>Học lực gần nhất</th>
+                  <th>Học bổng</th>
+                  <th class="num">Tổng đã tài trợ</th>
+                </tr>
+              </thead>
+              <tbody id="listBody"></tbody>
+            </table>
+          </div>
+          <div class="empty" id="listEmpty" style="display:none;">Không tìm thấy học sinh phù hợp.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-stats">
+      <div class="statgrid" id="statCards"></div>
+      <div class="breakdown">
+        <div class="panel" style="padding:16px;">
+          <div class="bd-title">Theo năm học</div>
+          <div id="bdYear"></div>
+        </div>
+        <div class="panel" style="padding:16px;">
+          <div class="bd-title">Theo cấp học</div>
+          <div id="bdCap"></div>
+        </div>
+        <div class="panel" style="padding:16px;">
+          <div class="bd-title">Theo tỉnh/thành (top 12)</div>
+          <div id="bdTinh"></div>
+        </div>
+        <div class="panel" style="padding:16px;">
+          <div class="bd-title">Theo xếp loại học lực (năm gần nhất)</div>
+          <div id="bdHocluc"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-review">
+      <div class="panel">
+        <div id="reviewList"></div>
+        <div class="empty" id="reviewEmpty" style="display:none;">Không có mục nào cần kiểm tra.</div>
+      </div>
+    </section>
+
+    <section class="view" id="view-report">
+      <div class="layout">
+        <div class="panel filters">
+          <div class="field">
+            <label for="rSearch">Tìm kiếm</label>
+            <input id="rSearch" type="text" placeholder="Tên, trường, địa chỉ..." />
+          </div>
+          <div class="field">
+            <label for="rTinh">Tỉnh/Thành</label>
+            <select id="rTinh"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="rCap">Cấp học</label>
+            <select id="rCap"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="rKhuVuc">Khu vực</label>
+            <select id="rKhuVuc"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="rPhuTrach">Người phụ trách</label>
+            <select id="rPhuTrach"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="rNamHoc">Năm học</label>
+            <select id="rNamHoc"><option value="">Tất cả (mới nhất)</option></select>
+          </div>
+          <div class="field">
+            <label for="rHocluc">Học lực</label>
+            <select id="rHocluc"><option value="">Tất cả</option></select>
+          </div>
+          <div class="field">
+            <label for="rTrangthai">Học bổng</label>
+            <select id="rTrangthai">
+              <option value="">Tất cả</option>
+              <option value="Có">Đang nhận</option>
+              <option value="Không">Không nhận</option>
+            </select>
+          </div>
+          <button class="btn ghost small" id="btnClearReportFilters">Xóa bộ lọc</button>
+        </div>
+
+        <div>
+          <div class="reportgrid" id="reportSummary"></div>
+
+          <div class="subtabs" id="reportSubtabs">
+            <button class="subtabbtn active" data-rtab="table">Bảng danh sách</button>
+            <button class="subtabbtn" data-rtab="dashboard">Dashboard phân tích</button>
+          </div>
+
+          <div id="reportTableWrap">
+            <div class="panel">
+              <div class="toolbar">
+                <span class="count" id="reportCount"></span>
+                <span class="search"></span>
+                <div class="exportbar">
+                  <button class="btn small" id="btnExportCsv">Xuất Excel (.csv)</button>
+                  <button class="btn small" id="btnExportDocx">Xuất Word (.docx)</button>
+                  <button class="btn small" id="btnExportPptx">Xuất PowerPoint (.pptx)</button>
+                  <button class="btn small" id="btnExportPdf">Xuất PDF</button>
+                </div>
+              </div>
+              <div class="tablewrap">
+                <table class="list">
+                  <thead>
+                    <tr>
+                      <th>Học sinh</th>
+                      <th>Tỉnh/Thành</th>
+                      <th>Trường / Cấp học</th>
+                      <th>Người phụ trách</th>
+                      <th>Học lực</th>
+                      <th>Học bổng</th>
+                      <th class="num">Tổng đã tài trợ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reportBody"></tbody>
+                </table>
+              </div>
+              <div class="empty" id="reportEmpty" style="display:none;">Không tìm thấy học sinh phù hợp.</div>
+              <div class="reportnote" id="reportNote"></div>
+            </div>
+          </div>
+
+          <div id="reportDashboardWrap" style="display:none;">
+            <div class="dashgrid">
+              <div class="dashpanel">
+                <div class="bd-title">Theo cấp học</div>
+                <div id="dashByCap"></div>
+              </div>
+              <div class="dashpanel">
+                <div class="bd-title">Top tỉnh/thành <span class="hint">tối đa 10</span></div>
+                <div id="dashByTinh"></div>
+              </div>
+              <div class="dashpanel">
+                <div class="bd-title">Phân bố học lực <span class="hint">năm được chọn / gần nhất</span></div>
+                <div id="dashByHocluc"></div>
+              </div>
+              <div class="dashpanel">
+                <div class="bd-title">Tỷ lệ đang nhận học bổng</div>
+                <div id="dashDonut"></div>
+              </div>
+              <div class="dashpanel">
+                <div class="bd-title">So sánh tài trợ theo người phụ trách <span class="hint">top 10, đơn vị: đã tài trợ</span></div>
+                <div id="dashByPhuTrach"></div>
+              </div>
+              <div class="dashpanel">
+                <div class="bd-title">Xu hướng tài trợ theo năm học <span class="hint">giữ nguyên các bộ lọc khác</span></div>
+                <div id="dashByYear"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-users">
+      <div class="panel">
+        <div class="toolbar">
+          <span class="count">Tài khoản người dùng</span>
+          <span class="search"></span>
+          <button class="btn primary small" id="btnAddUser">+ Thêm người dùng</button>
+        </div>
+        <div class="tablewrap" id="usersTableWrap"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="overlay" id="drawerOverlay">
+  <div class="drawer" id="drawer"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</div>
+
+<script src="app.js" defer></script>
+</body>
+</html>

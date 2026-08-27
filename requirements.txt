@@ -1,0 +1,5 @@
+Flask>=3.0,<4.0
+Werkzeug>=3.0,<4.0
+# Optional but recommended for production instead of the Flask dev server:
+# gunicorn>=21.0   (Linux/macOS)
+# waitress>=2.1    (Windows-friendly, also works on Linux/macOS)
